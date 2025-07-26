@@ -26,17 +26,147 @@ class list
         bool delete_end(); // done
         bool delete_begin(); // done
         bool delete_pos(int pos); // pos
-        bool delete_el(int v);
+        bool delete_el(int v); //done
 
         void print_list(); // done
         bool search_el(int v); // done
         int search_pos(int v); // done
         int list_size(); // done
+        bool is_sorted(); // done
+        bool reverse_list(); // done
+        bool delete_all(int v); //done
+        int get_middle(); // done
+        int count_occur(int v); // done
+        bool remove_dup_sorted(); // done
+        int get_nth(int n);
+
 
         ~list();
         list(list &o);
         void operator=(list &o);
 };
+
+int list::get_nth(int n)
+{
+    if(is_empty())
+        return -1;
+    node *tmp = head;
+    for(int i = 1; i < n; i++)
+        tmp = tmp->next;
+    return tmp->data;
+}
+
+bool list::remove_dup_sorted()
+{
+    if(!is_sorted())
+        return false;
+    node *tmp = head;
+    while(tmp)
+    {
+        int c = 0;
+        if((c = count_occur(tmp->data)) > 1)
+        {
+            while(c-- > 1)
+            {
+                node *saved = tmp->next;
+                delete_el(tmp->data);
+                tmp = saved;
+                continue;
+            }
+        }
+        tmp = tmp->next;
+    }
+    return true;
+}
+
+
+int list::count_occur(int v)
+{
+    int res = 0;
+    node *tmp = head;
+    while(tmp)
+    {
+        if(tmp->data == v)
+            res++;
+        tmp = tmp->next;
+    }
+    return res;
+}
+
+
+bool list::delete_all(int v)
+{
+    if(is_empty())
+        return false;
+    node *tmp = head;
+    while(tmp)
+    {
+        node *saved = tmp->next;
+        if(tmp->data == v)
+            delete_el(v);
+        tmp = saved;
+    }
+    return true;
+}
+
+int list::get_middle()
+{
+    int len = list_size();
+    node *tmp = head;
+    for(int i = 1; i<=len/2;i++)
+        tmp = tmp->next;
+    return tmp->data;
+}
+
+
+bool list::reverse_list()
+{
+    if(is_empty() || !head->next)
+        return true;
+    node *current = head;
+    node *prev = 0;
+    node *next_ = 0;
+    
+    while(current)
+    {
+        next_ = current->next;
+        current->next = prev;
+        prev = current;
+        current = next_;
+    }
+    tail = head;
+    head = prev;
+    return true;
+}
+
+
+bool list::is_sorted()
+{
+    node *tmp = head;
+    while(tmp->next)
+    {
+        if(tmp->data > tmp->next->data)
+            return false;
+        tmp = tmp->next;
+    }
+    return true;
+}
+
+bool list::delete_el(int v)
+{
+    if(is_empty())
+        return false;
+    int pos = 1;
+    node *tmp = head;
+    while(tmp)
+    {
+        if(tmp->data == v)
+            return (delete_pos(pos), true);
+        pos++;
+        tmp = tmp->next;
+    }
+    return false;
+}
 
 void list::operator=(list &o)
 {
@@ -101,18 +231,17 @@ bool list::delete_pos(int pos)
     if(pos <= 0 || pos > list_len)
         return false;
     else if(pos == 1)
-        return (delete_begin(), true);
+        return (delete_begin());
     else if(pos == list_len)
-        return (delete_end(), true);
+        return (delete_end());
     node *tmp = head, *del;
-    for(int i = 1; i < pos; i++)
+    for(int i = 1; i < pos - 1; i++)
         tmp = tmp->next;
     del = tmp->next;
     tmp->next = del->next;
     delete del;
     return true;
 }
-
 
 void list::add_begin(int v)
 {
@@ -184,7 +313,7 @@ void list::print_list()
 bool list::search_el(int v)
 {
     node *tmp = head;
-    while(tmp->next)
+    while(tmp)
     {
         if(tmp->data == v)
             return true;
@@ -197,7 +326,7 @@ int list::search_pos(int v)
     int pos = 1;
     node *tmp = head;
 
-    while(tmp->next)
+    while(tmp)
     {
         if(tmp->data == v)
             return pos;
@@ -211,7 +340,7 @@ int list::list_size()
     int counter = 0;
     node *tmp = head;
 
-    while(tmp->next)
+    while(tmp)
     {
         counter++;
         tmp = tmp->next;
@@ -227,20 +356,14 @@ int main()
     num.add_end(3);
     num.add_begin(1);
     num.add_end(4);
+    num.add_end(5);
+    num.add_end(6);
+    num.add_end(7);
+    num.add_end(8);
+
 
     num.print_list();
+    cout << num.get_nth(6) << endl;
 
-    list new_num;
-    new_num.add_begin(4);
-    new_num.add_end(47);
-    new_num.add_begin(9);
-    new_num.add_end(11);
-    new_num.print_list();
-
-    new_num = num;
-    new_num.print_list();
-
-    list num3 = new_num;
-    num3.print_list();
     return 0;
 }
