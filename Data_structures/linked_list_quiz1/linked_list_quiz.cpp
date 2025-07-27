@@ -38,13 +38,25 @@ class list
         int get_middle(); // done
         int count_occur(int v); // done
         bool remove_dup_sorted(); // done
-        int get_nth(int n);
+        int get_nth(int n); // done
+
+
+        void add_last_front();
 
 
         ~list();
         list(list &o);
         void operator=(list &o);
 };
+
+void list::add_last_front()
+{
+    node *tmp = head;
+    while(tmp->next)
+        tmp = tmp->next;
+    add_begin(tmp->data);
+    // delete_end();
+}
 
 int list::get_nth(int n)
 {
@@ -351,19 +363,32 @@ int list::list_size()
 int main()
 {
     list num;
-
-    num.add_begin(2);
+    
+    num.add_end(1);
+    num.add_end(0);
+    num.add_end(2);
+    num.add_end(0);
     num.add_end(3);
-    num.add_begin(1);
+    num.add_end(0);
     num.add_end(4);
+    num.add_end(0);
     num.add_end(5);
-    num.add_end(6);
-    num.add_end(7);
-    num.add_end(8);
-
-
+    num.add_end(0);
+    
     num.print_list();
-    cout << num.get_nth(6) << endl;
-
+    
+    int len = num.list_size();
+    while(len--)
+    {
+        int pos;
+        if((pos = num.search_pos(0)) != -1)
+        {
+            num.add_pos(10, pos);
+            num.delete_pos(pos);
+        }
+    }
+    num.print_list();
+    num.add_last_front();
+    num.print_list();
     return 0;
 }
